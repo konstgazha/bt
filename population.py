@@ -5,7 +5,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 import django
 django.setup()
 from core.models import Organization, Activity, OrganizationActivity,\
-                        Pledge, Request, RequestPledge, Rating, Status
+                        Pledge, Request, RequestPledge, Rating, Status, Type
 import pandas as pd
 import pickle
 from dateutil.parser import parse
@@ -15,10 +15,7 @@ def create_or_update_organization(**kwargs):
     instance, created = Organization.objects.get_or_create(inn=kwargs['inn'])
     if not created:
         for attr, value in kwargs.items(): 
-            if attr == 'registration_date':
-                setattr(instance, attr, parse(value))
-            else:
-                setattr(instance, attr, value)
+            setattr(instance, attr, value)
         instance.save()
 
 
@@ -62,6 +59,7 @@ def get_or_create_rating(name):
 
 
 def get_or_update_status(new_name):
+    status = None
     if 'стад' in new_name.lower() and 'реорг' in new_name.lower():
         status = Status.objects.get_or_create(name='в стадии реорганизации')[0]
     elif 'действ' in new_name.lower():
@@ -70,8 +68,22 @@ def get_or_update_status(new_name):
         status = Status.objects.get_or_create(name='в стадии ликвидации')[0]
     elif 'ликвид' in new_name.lower() or 'прекращ' in new_name.lower():
         status = Status.objects.get_or_create(name='ликвидировано')[0]
-    status.save()
+    if status:
+        status.save()
     return status
+
+
+def get_or_update_type(name):
+    org_type = None
+    if 'мал' in name.lower():
+        org_type = Type.objects.get_or_create(name='малое предприятие')[0]
+    if 'микро' in name.lower():
+        org_type = Type.objects.get_or_create(name='микропредприятие')[0]
+    if 'сред' in name.lower():
+        org_type = Type.objects.get_or_create(name='среднее предприятие')[0]
+    if org_type:
+        org_type.save()
+    return org_type
 
 
 def load_pickle(filename):
@@ -120,6 +132,10 @@ def populate_historical_data(filename):
             if attr == 'defendant_sum':
                 if not pd.isnull(value):
                     values.update({'defendant_sum': float(value)})
+            if attr == 'type':
+                if not pd.isnull(value):
+                    org_type = get_or_update_type(value)
+                    values.update({'org_type': org_type})
         if 'inn' in values.keys():
             create_or_update_organization(**values)
 
