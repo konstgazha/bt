@@ -1,23 +1,36 @@
 from django.db import models
 
 
+class Rating(models.Model):
+    name = models.CharField(max_length=128)
+
+
+class Status(models.Model):
+    name = models.CharField(max_length=128)
+
+
+class Type(models.Model):
+    name = models.CharField(max_length=128)
+
+
 class Organization(models.Model):
     inn = models.CharField(max_length=128, unique=True, blank=True, null=True)
     name = models.CharField(max_length=128, blank=True, null=True)
-    rating = models.CharField(max_length=128, blank=True, null=True)
-    status = models.CharField(max_length=128, blank=True, null=True)
+    rating = models.ForeignKey(Rating, on_delete=models.CASCADE, null=True, blank=True)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, null=True, blank=True)
     registry = models.BooleanField(blank=True, null=True)
     registration_date = models.DateTimeField(blank=True, null=True)
     employees_number = models.IntegerField(blank=True, null=True)
     planned_employees_number = models.IntegerField(blank=True, null=True)
     plaintiff_count = models.IntegerField(blank=True, null=True)
     defendant_count = models.IntegerField(blank=True, null=True)
-    plaintiff_sum = models.IntegerField(blank=True, null=True)
-    defendant_sum = models.IntegerField(blank=True, null=True)
+    plaintiff_sum = models.FloatField(blank=True, null=True)
+    defendant_sum = models.FloatField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     previous_year_revenue = models.IntegerField(blank=True, null=True)
     planned_revenue = models.IntegerField(blank=True, null=True)
+    org_type = models.ForeignKey(Type, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Activity(models.Model):
