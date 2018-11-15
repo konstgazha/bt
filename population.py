@@ -100,39 +100,39 @@ def populate_historical_data(filename):
             if attr == 'inn':
                 if not pd.isnull(value):
                     values.update({'inn': value})
-            if attr == 'rating':
+            elif attr == 'rating':
                 if not pd.isnull(value):
                     rating = get_or_create_rating(value)
                     values.update({'rating': rating})
-            if attr == 'status':
+            elif attr == 'status':
                 if not pd.isnull(value):
                     status = get_or_update_status(value)
                     values.update({'status': status})
-            if attr == 'Полное наименование заёмщика':
+            elif attr == 'Полное наименование заёмщика':
                 if not pd.isnull(value):
                     values.update({'name': value})
-            if attr == 'registration_date':
+            elif attr == 'registration_date':
                 if not pd.isnull(value):
                     values.update({'registration_date': parse(value)})
-            if attr == 'Численность работников по состоянию на 01 января текущего года':
+            elif attr == 'Численность работников по состоянию на 01 января текущего года':
                 if not pd.isnull(value):
                     values.update({'employees_number': int(float(value))})
-            if attr == 'Планируемое количество рабочих мест':
+            elif attr == 'Планируемое количество рабочих мест':
                 if not pd.isnull(value):
                     values.update({'planned_employees_number': int(float(value))})
-            if attr == 'plaintiff_count':
+            elif attr == 'plaintiff_count':
                 if not pd.isnull(value):
                     values.update({'plaintiff_count': int(value)})
-            if attr == 'defendant_count':
+            elif attr == 'defendant_count':
                 if not pd.isnull(value):
                     values.update({'defendant_count': int(value)})
-            if attr == 'plaintiff_sum':
+            elif attr == 'plaintiff_sum':
                 if not pd.isnull(value):
                     values.update({'plaintiff_sum': float(value)})
-            if attr == 'defendant_sum':
+            elif attr == 'defendant_sum':
                 if not pd.isnull(value):
                     values.update({'defendant_sum': float(value)})
-            if attr == 'type':
+            elif attr == 'type':
                 if not pd.isnull(value):
                     org_type = get_or_update_type(value)
                     values.update({'org_type': org_type})
